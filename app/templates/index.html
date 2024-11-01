@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Qué hay pa' hacer?</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://kit.fontawesome.com/58deb355db.js" crossorigin="anonymous"></script>
+    <script>
+        let respuestas = [];
+
+        function enviarRespuesta() {
+            fetch("/pregunta", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ "respuestas": respuestas })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.recomendacion) {
+                    document.getElementById("pregunta").innerText = "Te recomendamos estos lugares:";
+                    document.getElementById("opciones").innerHTML = data.recomendacion.map(
+                        rec => `<p>${rec}</p>`
+                    ).join('');
+                } else {
+                    // Mostrar la siguiente pregunta y opciones de respuesta
+                    document.getElementById("pregunta").innerText = data.pregunta;
+                    document.getElementById("opciones").innerHTML = data.opciones.map(
+                        opcion => `
+                            <input type="radio" name="respuesta" value="${opcion.respuesta}" onchange="seleccionarRespuesta('${opcion.respuesta}')">
+                            <label>${opcion.respuesta}</label><br>`
+                    ).join('');
+                }
+            });
+        }
+
+        function seleccionarRespuesta(respuesta) {
+            respuestas.push(respuesta);
+            enviarRespuesta();
+        }
+
+        window.onload = function() {
+            enviarRespuesta();
+        };
+    </script>
+</head>
+<body>
+    <h1>Recomendación de Planes</h1>
+    <div id="pregunta"></div>
+    <div id="opciones"></div>
+</body>
+</html>
