@@ -29,32 +29,35 @@ plan_extremo = Nodo("plan extremo", es_pregunta=False)
 plan_fresco = Nodo("plan fresco", es_pregunta=False)
 
 armas = Nodo("¿Te gustaría algo relacionado con armas?", es_pregunta=True)
-si_armas = Nodo("Sí", es_pregunta=False)
-campo_tiro = Nodo("Campo de tiro", es_pregunta=False)
-airsoft = Nodo("Airsoft", es_pregunta=False)
-no_armas = Nodo("No", es_pregunta=False)
 
+si_armas = Nodo("Sí", es_pregunta=False)
+campo_tiro = Nodo("Polígono la Diana pyp - Alto Puelenje ", es_pregunta=False)
+airsoft = Nodo("Lanceros Airsoft - San Bernardino, Calle 17", es_pregunta=False)
+
+no_armas = Nodo("No", es_pregunta=False)
 alturas = Nodo("¿Te gustaría algo relacionado con las alturas?", es_pregunta=True)
+
 si_alturas = Nodo("Sí", es_pregunta=False)
-canopy = Nodo("Canopy", es_pregunta=False)
-parapente = Nodo("Parapente", es_pregunta=False)
+canopy = Nodo("Canopy Las Ardillas - 8 km Vía al sur, vereda La Martica ", es_pregunta=False)
+parapente = Nodo("Parapente MTB - Vereda San Alfonso", es_pregunta=False)
+
 no_alturas = Nodo("No", es_pregunta=False)
-pista_carreras = Nodo("Pista de carreras", es_pregunta=False)
+pista_carreras = Nodo("Corona Club Xtreme Park - Via Piendamo, Cajibío", es_pregunta=False)
 
 entorno = Nodo("¿Qué entorno te gustaría?", es_pregunta=True)
 natural = Nodo("Natural", es_pregunta=False)
 
 deporte = Nodo("¿Te gustaría algo relacionado con un deporte?", es_pregunta=True)
 si_deporte = Nodo("Sí", es_pregunta=False)
-mountain_bike = Nodo("Mountain bike en la Torre", es_pregunta=False)
-voley_playa = Nodo("Voley Playa", es_pregunta=False)
-pesca_deportiva = Nodo("Pesca Deportiva", es_pregunta=False)
+mountain_bike = Nodo("Mountain bike en la Torre - Vereda El Placer", es_pregunta=False)
+voley_playa = Nodo("Voley Playa - Via al Bosque", es_pregunta=False)
+pesca_deportiva = Nodo("Acuarius - Vía Timbío-Popayán, Los robles", es_pregunta=False)
 
 no_deporte = Nodo("No", es_pregunta=False)
-senderismo = Nodo("Senderismo hasta las 3 cruces", es_pregunta=False)
-humedal = Nodo("Visita al humedal lago el Bolsón", es_pregunta=False)
+senderismo = Nodo("Senderismo hasta el Cerro las 3 cruces", es_pregunta=False)
+humedal = Nodo("Visita al humedal lago el Bolsón - Vereda el Lago, La Capilla, Cajibío ", es_pregunta=False)
 urbano = Nodo("Urbano", es_pregunta=False)
-trampolines = Nodo("Parque de trampolines", es_pregunta=False)
+trampolines = Nodo("Sky Trampoline Park - Centro Comercial Monserrat Plaza", es_pregunta=False)
 
 # Crear árbol y agregar nodos
 arbol = Arbol(raiz)

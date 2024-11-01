@@ -7,18 +7,18 @@ def pagina_no_encontrada(error):
     return render_template('404.html'), 404
 
 def obtener_nodo(nodo, respuestas):
-    print(f"Iniciando navegación desde: {nodo.dato}")
+    #print(f"Iniciando navegación desde: {nodo.dato}")
     nodo_actual = nodo
     
     for respuesta in respuestas:
-        print(f"Buscando respuesta: '{respuesta}'")
+        #print(f"Buscando respuesta: '{respuesta}'")
         encontrado = False
         
         # Primero buscamos entre los hijos directos
         hijo = nodo_actual.primer_hijo
         while hijo:
             if hijo.dato.lower().strip() == respuesta.lower().strip():
-                print(f"Encontrada respuesta: {hijo.dato}")
+                #print(f"Encontrada respuesta: {hijo.dato}")
                 nodo_actual = hijo
                 encontrado = True
                 break
@@ -30,17 +30,16 @@ def obtener_nodo(nodo, respuestas):
             hijo = nodo_actual.primer_hijo
             while hijo:
                 if hijo.dato.lower().strip() == respuesta.lower().strip():
-                    print(f"Encontrada respuesta en siguiente nivel: {hijo.dato}")
+                    #print(f"Encontrada respuesta en siguiente nivel: {hijo.dato}")
                     nodo_actual = hijo
                     encontrado = True
                     break
                 hijo = hijo.siguiente_hermano
                 
         if not encontrado:
-            print(f"No se encontró la respuesta: {respuesta}")
-            break
-            
-    print(f"Nodo final: {nodo_actual.dato}")
+            #print(f"No se encontró la respuesta: {respuesta}")
+            break        
+    #print(f"Nodo final: {nodo_actual.dato}")
     return nodo_actual
 
 
@@ -53,10 +52,10 @@ def iter_nodos(nodo):
 @app.route("/pregunta", methods=["POST"])
 def pregunta():
     respuestas = request.json.get("respuestas", [])
-    print(f"Respuestas recibidas: {respuestas}")
+    #print(f"Respuestas recibidas: {respuestas}")
     
     nodo_actual = obtener_nodo(arbol.raiz, respuestas)
-    print(f"Nodo actual: {nodo_actual.dato}, es_pregunta: {nodo_actual.es_pregunta}")
+    #print(f"Nodo actual: {nodo_actual.dato}, es_pregunta: {nodo_actual.es_pregunta}")
     
     # Si el nodo actual es una respuesta y tiene una pregunta como hijo
     if not nodo_actual.es_pregunta and nodo_actual.primer_hijo and nodo_actual.primer_hijo.es_pregunta:
