@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>¿Qué hay pa' hacer?</title>
+    <title>¿Qué hay pa'?</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="https://kit.fontawesome.com/58deb355db.js" crossorigin="anonymous"></script>
+    <link rel="icon" type="image/ico" href="../static/img/placeholder-19_icon-icons.com_62029.ico"/>
     <script>
         let respuestas = [];
 
@@ -24,6 +25,8 @@
                     document.getElementById("opciones").innerHTML = data.recomendacion.map(
                         rec => `<p>${rec}</p>`
                     ).join('');
+                    // Mostrar botón para reiniciar
+                    document.getElementById("reiniciar").innerHTML = '<button class="shadow-effect" onclick="reiniciar()">Volver a empezar</button>';
                 } else {
                     // Mostrar la siguiente pregunta y opciones de respuesta
                     document.getElementById("pregunta").innerText = data.pregunta;
@@ -41,14 +44,40 @@
             enviarRespuesta();
         }
 
+        function iniciar() {
+            respuestas = [];
+            document.getElementById("pregunta").innerText = "¿Qué tipo de plan prefieres?";
+            document.getElementById("opciones").innerHTML = `
+                <input type="radio" name="respuesta" value="plan extremo" onchange="seleccionarRespuesta('plan extremo')">
+                <label>Plan extremo</label><br>
+                <input type="radio" name="respuesta" value="plan fresco" onchange="seleccionarRespuesta('plan fresco')">
+                <label>Plan fresco</label><br>`;
+            document.getElementById("reiniciar").innerHTML = '';
+            document.getElementById("iniciar").style.display = "none"; // Ocultar el botón de inicio
+        }
+
+        function reiniciar() {
+            document.getElementById("pregunta").innerText = "";
+            document.getElementById("opciones").innerHTML = "";
+            document.getElementById("reiniciar").innerHTML = "";
+            document.getElementById("iniciar").style.display = "block"; // Mostrar el botón de inicio
+        }
+
         window.onload = function() {
-            enviarRespuesta();
+            // Solo mostrar el botón de iniciar
+            document.getElementById("iniciar").style.display = "block";
         };
     </script>
 </head>
 <body>
-    <h1>Recomendación de Planes</h1>
-    <div id="pregunta"></div>
-    <div id="opciones"></div>
+    <div class="container">
+        <div class="bg-3">
+            <h1 class="text-gradient">¿Qué hay pa' hacer en Popayán?</h1>
+        </div>
+        <div id="pregunta"></div>
+        <div id="opciones"></div>
+        <div id="reiniciar"></div> <!-- Div para el botón de reiniciar -->
+        <button class="shadow-effect" id="iniciar" onclick="iniciar()">Inicia la búsqueda</button> <!-- Botón para iniciar -->
+    </div>
 </body>
 </html>

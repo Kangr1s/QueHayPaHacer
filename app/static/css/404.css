@@ -17,12 +17,10 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
-    background-color: red;
     width: 50%;
 }
 
 .error-404{
-    background-color: aliceblue;
 }
 
 .error-404 h1{

@@ -1,92 +1,90 @@
 # app/arbol.py
-
 class Nodo:
-    def __init__(self, pregunta, respuesta=None):
-        self.pregunta = pregunta     # Pregunta o descripción del nodo
-        self.respuesta = respuesta   # Respuesta o valor en este nodo (opcional)
-        self.hijos = []              # Lista de hijos del nodo
-
-    def agregar_hijo(self, nodo_hijo):
-        self.hijos.append(nodo_hijo)
-
-    def __repr__(self, nivel=0):
-        ret = "\t" * nivel + f"{self.pregunta}: {self.respuesta if self.respuesta else ''}\n"
-        for hijo in self.hijos:
-            ret += hijo.__repr__(nivel + 1)
-        return ret
+    def __init__(self, dato, es_pregunta=False):
+        self.dato = dato
+        self.es_pregunta = es_pregunta
+        self.primer_hijo = None
+        self.siguiente_hermano = None
+    
+    def agregar_hijo(self, nuevo_hijo):
+        if self.primer_hijo is None:
+            self.primer_hijo = nuevo_hijo
+        else:
+            actual = self.primer_hijo
+            while actual.siguiente_hermano:
+                actual = actual.siguiente_hermano
+            actual.siguiente_hermano = nuevo_hijo
 
 class Arbol:
     def __init__(self, raiz):
         self.raiz = raiz
 
-    def imprimir_arbol(self):
-        if self.raiz is not None:
-            print(self.raiz)
+    def agregar_nodo(self, nodo_padre, nodo_hijo):
+        nodo_padre.agregar_hijo(nodo_hijo)
 
-# Crear el árbol con la estructura deseada
+# Crear nodos - Preguntas
+raiz = Nodo("¿Qué tipo de plan prefieres?", es_pregunta=True)
+# Crear nodos - Respuestas y recomendaciones
+plan_extremo = Nodo("plan extremo", es_pregunta=False)
+plan_fresco = Nodo("plan fresco", es_pregunta=False)
 
-# Raíz del árbol
-raiz = Nodo("¿Qué tipo de plan prefieres?")
+armas = Nodo("¿Te gustaría algo relacionado con armas?", es_pregunta=True)
+si_armas = Nodo("Sí", es_pregunta=False)
+campo_tiro = Nodo("Campo de tiro", es_pregunta=False)
+airsoft = Nodo("Airsoft", es_pregunta=False)
+no_armas = Nodo("No", es_pregunta=False)
 
-# Nodos principales
-plan_extremo = Nodo("plan extremo")
-plan_fresco = Nodo("plan fresco")
+alturas = Nodo("¿Te gustaría algo relacionado con las alturas?", es_pregunta=True)
+si_alturas = Nodo("Sí", es_pregunta=False)
+canopy = Nodo("Canopy", es_pregunta=False)
+parapente = Nodo("Parapente", es_pregunta=False)
+no_alturas = Nodo("No", es_pregunta=False)
+pista_carreras = Nodo("Pista de carreras", es_pregunta=False)
 
-# Agregar los planes principales al nodo raíz
-raiz.agregar_hijo(plan_extremo)
-raiz.agregar_hijo(plan_fresco)
+entorno = Nodo("¿Qué entorno te gustaría?", es_pregunta=True)
+natural = Nodo("Natural", es_pregunta=False)
 
-# Nodos para "plan extremo"
-armas = Nodo("¿Te gustaría algo relacionado con armas?")
-armas_si = Nodo("Sí")
-armas_no = Nodo("No")
+deporte = Nodo("¿Te gustaría algo relacionado con un deporte?", es_pregunta=True)
+si_deporte = Nodo("Sí", es_pregunta=False)
+mountain_bike = Nodo("Mountain bike en la Torre", es_pregunta=False)
+voley_playa = Nodo("Voley Playa", es_pregunta=False)
+pesca_deportiva = Nodo("Pesca Deportiva", es_pregunta=False)
 
-# Nodos hijos de "Sí" y "No" bajo "¿Te gustaría algo relacionado con armas?"
-armas_si.agregar_hijo(Nodo("Campo de tiro"))
-armas_si.agregar_hijo(Nodo("Airsoft"))
+no_deporte = Nodo("No", es_pregunta=False)
+senderismo = Nodo("Senderismo hasta las 3 cruces", es_pregunta=False)
+humedal = Nodo("Visita al humedal lago el Bolsón", es_pregunta=False)
+urbano = Nodo("Urbano", es_pregunta=False)
+trampolines = Nodo("Parque de trampolines", es_pregunta=False)
 
-alturas = Nodo("¿Te gustaría algo relacionado con las alturas?")
-alturas_si = Nodo("Sí")
-alturas_no = Nodo("No")
-
-alturas_si.agregar_hijo(Nodo("Canopy"))
-alturas_si.agregar_hijo(Nodo("Parapente"))
-alturas_no.agregar_hijo(Nodo("Pista de carreras"))
-
-# Armar el subárbol de "plan extremo"
-plan_extremo.agregar_hijo(armas)
-armas.agregar_hijo(armas_si)
-armas.agregar_hijo(armas_no)
-armas_no.agregar_hijo(alturas)
-alturas.agregar_hijo(alturas_si)
-alturas.agregar_hijo(alturas_no)
-
-# Nodos para "plan fresco"
-entorno = Nodo("¿Qué entorno te gustaría?")
-natural = Nodo("Natural")
-urbano = Nodo("Urbano")
-
-# Subárbol para "Natural"
-deporte = Nodo("¿Te gustaría algo relacionado con un deporte?")
-deporte_si = Nodo("Sí")
-deporte_no = Nodo("No")
-
-deporte_si.agregar_hijo(Nodo("Mountain bike en la Torre"))
-deporte_si.agregar_hijo(Nodo("Voley Playa"))
-deporte_si.agregar_hijo(Nodo("Pesca Deportiva"))
-deporte_no.agregar_hijo(Nodo("Senderismo hasta las 3 cruces"))
-deporte_no.agregar_hijo(Nodo("Visita al humedal lago el Bolsón"))
-
-# Subárbol para "Urbano"
-urbano.agregar_hijo(Nodo("Parque de trampolines"))
-
-# Armar el subárbol de "plan fresco"
-plan_fresco.agregar_hijo(entorno)
-entorno.agregar_hijo(natural)
-entorno.agregar_hijo(urbano)
-natural.agregar_hijo(deporte)
-deporte.agregar_hijo(deporte_si)
-deporte.agregar_hijo(deporte_no)
-
-# Crear el árbol
+# Crear árbol y agregar nodos
 arbol = Arbol(raiz)
+    
+arbol.agregar_nodo(raiz, plan_extremo)
+arbol.agregar_nodo(raiz, plan_fresco)
+    
+arbol.agregar_nodo(plan_extremo, armas)
+arbol.agregar_nodo(armas, si_armas)
+arbol.agregar_nodo(si_armas, campo_tiro)
+arbol.agregar_nodo(si_armas, airsoft)
+arbol.agregar_nodo(armas, no_armas)
+    
+arbol.agregar_nodo(no_armas, alturas)
+arbol.agregar_nodo(alturas, si_alturas)
+arbol.agregar_nodo(si_alturas, canopy)
+arbol.agregar_nodo(si_alturas, parapente)
+arbol.agregar_nodo(alturas, no_alturas)
+arbol.agregar_nodo(no_alturas, pista_carreras)
+    
+arbol.agregar_nodo(plan_fresco, entorno)
+arbol.agregar_nodo(entorno, natural)
+arbol.agregar_nodo(natural, deporte)
+arbol.agregar_nodo(deporte, si_deporte)
+arbol.agregar_nodo(si_deporte, mountain_bike)
+arbol.agregar_nodo(si_deporte, voley_playa)
+arbol.agregar_nodo(si_deporte, pesca_deportiva)
+arbol.agregar_nodo(deporte, no_deporte)
+arbol.agregar_nodo(no_deporte, senderismo)
+arbol.agregar_nodo(no_deporte, humedal)
+    
+arbol.agregar_nodo(entorno, urbano)
+arbol.agregar_nodo(urbano, trampolines)
