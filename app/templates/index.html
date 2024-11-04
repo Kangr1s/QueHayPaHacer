@@ -20,6 +20,7 @@
             })
             .then(response => response.json())
             .then(data => {
+                // Si lo enviado por el backend es una recomendación, se actualiza la plantilla con lo siguiente
                 if (data.recomendacion) {
                     document.getElementById("pregunta").innerText = "Te recomendamos estos lugares:";
                     document.getElementById("opciones").innerHTML = data.recomendacion.map(
@@ -27,6 +28,7 @@
                     ).join('');
                     // Mostrar botón para reiniciar
                     document.getElementById("reiniciar").innerHTML = '<button class="shadow-effect" onclick="reiniciar()">Volver a empezar</button>';
+                // Si no son recomendaciones, pues se espera una pregunta y sus respuestas para actualizar la plantilla con lo siguiente
                 } else {
                     // Mostrar la siguiente pregunta y opciones de respuesta
                     document.getElementById("pregunta").innerText = data.pregunta;
@@ -39,11 +41,13 @@
             });
         }
 
+        // Envia la respuesta selccionada mediante la funcion enviarRespuesta(), que se almacena en un array
         function seleccionarRespuesta(respuesta) {
             respuestas.push(respuesta);
             enviarRespuesta();
         }
 
+        // Inicia todo con la pregunta predertminada
         function iniciar() {
             respuestas = [];
             document.getElementById("pregunta").innerText = "¿Qué tipo de plan prefieres?";
@@ -56,6 +60,7 @@
             document.getElementById("iniciar").style.display = "none"; // Ocultar el botón de inicio
         }
 
+        // Reinincia todo al momento de recomendar 
         function reiniciar() {
             document.getElementById("pregunta").innerText = "";
             document.getElementById("opciones").innerHTML = "";
@@ -63,6 +68,7 @@
             document.getElementById("iniciar").style.display = "block"; // Mostrar el botón de inicio
         }
 
+        // Evento que se dispara cuando se cargan todos los documentos necesarios para la página (CSS, HTML, JavaScript)
         window.onload = function() {
             // Solo mostrar el botón de iniciar
             document.getElementById("iniciar").style.display = "block";
