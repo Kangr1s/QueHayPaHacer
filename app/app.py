@@ -47,11 +47,11 @@ def obtener_nodo(nodo, respuestas):
         if not encontrado:
             #print(f"No se encontró la respuesta: {respuesta}")
             break   
-             
+
     #print(f"Nodo final: {nodo_actual.dato}")
     return nodo_actual
 
-
+#Itera en los nodos que están en el mismo nivel de los otros
 def iter_nodos(nodo):
     actual = nodo.primer_hijo
     while actual:
@@ -62,10 +62,10 @@ def iter_nodos(nodo):
 @app.route("/pregunta", methods=["POST"])
 def pregunta():
     respuestas = request.json.get("respuestas", [])
-    print(f"Respuestas recibidas: {respuestas}")
+    # print(f"Respuestas recibidas: {respuestas}")
     
     nodo_actual = obtener_nodo(arbol.raiz, respuestas)
-    print(f"Nodo actual: {nodo_actual.dato}, es_pregunta: {nodo_actual.es_pregunta}")
+    # print(f"Nodo actual: {nodo_actual.dato}, es_pregunta: {nodo_actual.es_pregunta}")
     
     # Si el nodo actual es una respuesta y tiene una pregunta como hijo
     if not nodo_actual.es_pregunta and nodo_actual.primer_hijo and nodo_actual.primer_hijo.es_pregunta:
