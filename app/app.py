@@ -93,6 +93,7 @@ def pregunta():
     # (es una respuesta final) o tiene recomendaciones
     # Si el nodo tiene hijos que son recomendaciones
     # Si el nodo tiene hijos que son recomendaciones
+    
     recomendaciones = [hijo.dato for hijo in iter_nodos(nodo_actual)]
     return jsonify({"recomendacion": recomendaciones})
 
