@@ -1,5 +1,10 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, url_for
 from tree import arbol
+from grafo import grafo  # Importar el grafo
+import osmnx as ox
+import networkx as nx
+import folium 
+from folium import DivIcon
 
 app = Flask(__name__)
 
@@ -22,7 +27,7 @@ def obtener_nodo(nodo, respuestas):
         #print(f"Buscando respuesta: '{respuesta}'")
         encontrado = False
         
-        # Primero buscamos entre los hijos directos
+        #Primero buscamos entre los hijos directos
         hijo = nodo_actual.primer_hijo
         while hijo:
             if hijo.dato.lower().strip() == respuesta.lower().strip():
@@ -38,7 +43,7 @@ def obtener_nodo(nodo, respuestas):
             hijo = nodo_actual.primer_hijo
             while hijo:
                 if hijo.dato.lower().strip() == respuesta.lower().strip():
-                    #print(f"Encontrada respuesta en siguiente nivel: {hijo.dato}")
+                    print(f"Encontrada respuesta en siguiente nivel: {hijo.dato}")
                     nodo_actual = hijo
                     encontrado = True
                     break
@@ -59,13 +64,13 @@ def iter_nodos(nodo):
         actual = actual.siguiente_hermano
 
 
+
 @app.route("/pregunta", methods=["POST"])
 def pregunta():
     respuestas = request.json.get("respuestas", [])
-    # print(f"Respuestas recibidas: {respuestas}")
+    print(f"Respuestas recibidas: {respuestas}")
     
     nodo_actual = obtener_nodo(arbol.raiz, respuestas)
-    # print(f"Nodo actual: {nodo_actual.dato}, es_pregunta: {nodo_actual.es_pregunta}")
     
     # Si el nodo actual es una respuesta y tiene una pregunta como hijo
     if not nodo_actual.es_pregunta and nodo_actual.primer_hijo and nodo_actual.primer_hijo.es_pregunta:
@@ -76,26 +81,80 @@ def pregunta():
             "opciones": opciones
         })
     
-    # Este metodo no sirve de nada, dado que siempre el nodo actual no va a hacer pregunta, si no, una respuesta a comparar
-    # Si el nodo actual es una pregunta
-    '''if nodo_actual.es_pregunta:
-        opciones = [{"respuesta": hijo.dato} for hijo in iter_nodos(nodo_actual)]
-        return jsonify({
-            "pregunta": nodo_actual.dato,
-            "opciones": opciones
-        })'''
-    
-    # Si llegamos a una respuesta final
-    # if not nodo_actual.primer_hijo:
-        # return jsonify({"recomendacion": [nodo_actual.dato]})
-
-    # Si llegamos aquí, significa que el nodo actual no tiene hijos
-    # (es una respuesta final) o tiene recomendaciones
-    # Si el nodo tiene hijos que son recomendaciones
-    # Si el nodo tiene hijos que son recomendaciones
-    
+    # Obtener recomendaciones
     recomendaciones = [hijo.dato for hijo in iter_nodos(nodo_actual)]
-    return jsonify({"recomendacion": recomendaciones})
+    
+    # Definir un diccionario de traducción de rutas
+    traduccion_rutas = {
+        "relax-agua": ['plan extremo', 'Acuático', 'Sí'],
+        "agua": ['plan extremo', 'Acuático', 'No'],
+        "armas-carros": ['plan extremo', 'Terrestre', 'Armas', 'Sí'],
+        "armas": ['plan extremo', 'Terrestre', 'Armas', 'No'],
+        "alturas": ['plan extremo', 'Terrestre', 'Alturas'],
+        "urbano": ['plan fresco', 'Urbano'],
+        "relax-sport": ['plan fresco', 'Natural', 'Sí', 'Sí'],
+        "sport": ['plan fresco', 'Natural', 'Sí', 'No'],
+        "natural": ['plan fresco', 'Natural', 'No']
+    }
+
+    # Filtrar lugares según las respuestas y los pesos de las aristas
+    # Filtrar lugares según las respuestas y los pesos de las aristas
+    # Filtrar lugares según las respuestas y los pesos de las aristas
+    lugares = []  # Usar una lista para mantener el orden
+    for ruta, condiciones in traduccion_rutas.items():
+        if respuestas == condiciones:
+            print(f"Ruta encontrada: {ruta}. Buscando ubicaciones...")
+            for arista in grafo.aristas:
+                # Verificar si la ruta está en los pesos de la arista
+                if ruta in arista.pesos.get("Ruta", []):
+                    # Agregar el nodo de origen si no está ya en la lista
+                    if arista.origen and not any(lugar['nombre'] == arista.origen.nombre for lugar in lugares):
+                        print(f"Ubicación de origen: {arista.origen.nombre}, Coordenadas: {arista.origen.location}")
+                        lugares.append({
+                            "nombre": arista.origen.nombre,
+                            "location": arista.origen.location
+                        })
+                    
+                    # Agregar el nodo de destino si no está ya en la lista
+                    if not any(lugar['nombre'] == arista.destino.nombre for lugar in lugares):
+                        print(f"Ubicación: {arista.destino.nombre}, Coordenadas: {arista.destino.location}")
+                        lugares.append({
+                            "nombre": arista.destino.nombre,
+                            "location": arista.destino.location
+                        })
+                else:
+                    print(f"No se encontró la ruta '{ruta}' en los pesos de la arista hacia {arista.destino.nombre}.")
+
+    # Crear un mapa con Folium
+    mapa = folium.Map(location=[2.4489, -76.6108], zoom_start=15)  # Coordenadas de la ciudad
+
+
+    for index, lugar in enumerate(lugares, start=1):  # Comenzar el índice desde 1
+        # Crear el marcador con un DivIcon que incluya el icono y el número
+        folium.Marker(
+            location=lugar['location'],
+            popup=lugar['nombre'],
+            icon=folium.Icon(color='blue', icon='info-sign')
+        ).add_to(mapa)
+
+        # Crear un DivIcon para mostrar el número al lado del ícono
+        folium.Marker(
+            location=lugar['location'],
+            icon=folium.DivIcon(
+                icon_size=(150, 36),
+                icon_anchor=(0, 0),
+                html=f'<div style="font-size: 12pt; color: blue; margin-left: 20px;"><b>{index}</b></div>'
+            )
+        ).add_to(mapa)
+
+    # Guardar el mapa en un archivo HTML dentro de la carpeta static
+    mapa.save("app/static/maps/mapa_recomendaciones.html")
+
+    return jsonify({
+        "recomendacion": recomendaciones,
+        "lugares": lugares,
+        "mapa": url_for('static', filename='maps/mapa_recomendaciones.html')  # Retornar la ruta correcta del mapa
+    })
 
 if __name__ == '__main__':
     app.register_error_handler(404, pagina_no_encontrada)

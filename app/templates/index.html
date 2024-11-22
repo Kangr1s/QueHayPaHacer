@@ -6,6 +6,7 @@
     <title>¿Qué hay pa'?</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="https://kit.fontawesome.com/58deb355db.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <link rel="icon" type="image/ico" href="../static/img/placeholder-19_icon-icons.com_62029.ico"/>
     <script>
         let respuestas = [];
@@ -26,9 +27,13 @@
                     document.getElementById("opciones").innerHTML = data.recomendacion.map(
                         rec => `<p>${rec}</p>`
                     ).join('');
+                    
+                    // Mostrar el mapa
+                    mostrarMapa(data.mapa); // Llama a la función para mostrar el mapa
+
                     // Mostrar botón para reiniciar
                     document.getElementById("reiniciar").innerHTML = '<button class="shadow-effect" onclick="reiniciar()">Volver a empezar</button>';
-                // Si no son recomendaciones, pues se espera una pregunta y sus respuestas para actualizar la plantilla con lo siguiente
+                // Si no son recomendaciones, se espera una pregunta y sus respuestas para actualizar la plantilla con lo siguiente
                 } else {
                     // Mostrar la siguiente pregunta y opciones de respuesta
                     document.getElementById("pregunta").innerText = data.pregunta;
@@ -41,24 +46,41 @@
             });
         }
 
-        // Envia la respuesta selccionada mediante la funcion enviarRespuesta(), que se almacena en un array
-        function seleccionarRespuesta(respuesta) {
-            respuestas.push(respuesta);
-            enviarRespuesta();
+        // Función para mostrar el mapa
+        function mostrarMapa(mapaUrl) {
+            // Crea un iframe para cargar el mapa generado
+            const iframe = document.createElement('iframe');
+            iframe.src = mapaUrl; // Ruta del mapa generado
+            iframe.style.width = "700px";
+            iframe.style.height = "500px"; // Altura del iframe
+            iframe.frameBorder = "1"; // Sin bordes
+
+            // Limpia el contenedor del mapa y agrega el iframe
+            const mapaContainer = document.getElementById('map');
+            mapaContainer.innerHTML = ''; // Limpiar contenido previo
+            mapaContainer.appendChild(iframe); // Agregar el iframe al contenedor del mapa
+            mapaContainer.style.display = 'block'; // Asegúrate de mostrar el contenedor del mapa
         }
 
-        // Inicia todo con la pregunta predertminada
-        function iniciar() {
-            respuestas = [];
-            document.getElementById("pregunta").innerText = "¿Qué tipo de plan prefieres?";
-            document.getElementById("opciones").innerHTML = `
-                <input type="radio" name="respuesta" value="plan extremo" onchange="seleccionarRespuesta('plan extremo')">
-                <label>Plan extremo</label><br>
-                <input type="radio" name="respuesta" value="plan fresco" onchange="seleccionarRespuesta('plan fresco')">
-                <label>Plan fresco</label><br>`;
-            document.getElementById("reiniciar").innerHTML = '';
-            document.getElementById("iniciar").style.display = "none"; // Ocultar el botón de inicio
-        }
+    // Envia la respuesta seleccionada mediante la funcion enviarRespuesta(), que se almacena en un array
+    function seleccionarRespuesta(respuesta) {
+        respuestas.push(respuesta);
+        enviarRespuesta();
+    }
+
+    // Inicia todo con la pregunta predeterminada
+    function iniciar() {
+        respuestas = [];
+        document.getElementById("pregunta").innerText = "¿Qué tipo de plan prefieres?";
+        document.getElementById("opciones").innerHTML = `
+            <input type="radio" name="respuesta" value="plan extremo" onchange="seleccionarRespuesta('plan extremo')">
+            <label>Plan extremo</label><br>
+            <input type="radio" name="respuesta" value="plan fresco" onchange="seleccionarRespuesta('plan fresco')">
+            <label>Plan fresco</label><br>`;
+        document.getElementById("reiniciar").innerHTML = '';
+        document.getElementById("iniciar").style.display = "none"; // Ocultar el botón de inicio
+        document.getElementById("map").style.display = "none"; // Asegurar que el mapa esté oculto al inicio
+    }
 
         // Reinincia todo al momento de recomendar 
         function reiniciar() {
@@ -66,6 +88,7 @@
             document.getElementById("opciones").innerHTML = "";
             document.getElementById("reiniciar").innerHTML = "";
             document.getElementById("iniciar").style.display = "block"; // Mostrar el botón de inicio
+            document.getElementById("map").style.display = "none"; // Ocultar el mapa al reiniciar
         }
 
         // Evento que se dispara cuando se cargan todos los documentos necesarios para la página (CSS, HTML, JavaScript)
@@ -82,6 +105,7 @@
         </div>
         <div id="pregunta"></div>
         <div id="opciones"></div>
+        <div id="map" style="display: none;"></div> <!-- Contenedor para el mapa -->
         <div id="reiniciar"></div> <!-- Div para el botón de reiniciar -->
         <button class="shadow-effect" id="iniciar" onclick="iniciar()">Inicia la búsqueda</button> <!-- Botón para iniciar -->
     </div>
