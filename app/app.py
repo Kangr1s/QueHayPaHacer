@@ -8,6 +8,11 @@ from folium import DivIcon
 
 app = Flask(__name__)
 
+# Inicializar el grafo globalmente al inicio de la aplicación
+print("Cargando mapa de la ciudad...")
+G = ox.graph_from_place("Popayán, Colombia", network_type='drive')
+print("Mapa cargado exitosamente.")
+
 # Función de error 404. Llama la página de error
 def pagina_no_encontrada(error):
     return render_template('404.html'), 404
@@ -128,7 +133,6 @@ def pregunta():
     # Crear un mapa con Folium
     mapa = folium.Map(location=[2.4489, -76.6108], zoom_start=15)  # Coordenadas de la ciudad
 
-
     for index, lugar in enumerate(lugares, start=1):  # Comenzar el índice desde 1
         # Crear el marcador con un DivIcon que incluya el icono y el número
         folium.Marker(
@@ -146,6 +150,18 @@ def pregunta():
                 html=f'<div style="font-size: 12pt; color: blue; margin-left: 20px;"><b>{index}</b></div>'
             )
         ).add_to(mapa)
+
+# Conectar los puntos
+    for i in range(len(lugares) - 1):
+        origen = ox.distance.nearest_nodes(G, lugares[i]['location'][1], lugares[i]['location'][0])
+        destino = ox.distance.nearest_nodes(G, lugares[i + 1]['location'][1], lugares[i + 1]['location'][0])
+
+        # Encontrar la ruta más corta
+        ruta = nx.shortest_path(G, origen, destino, weight="length")
+        ruta_coords = [(G.nodes[n]['y'], G.nodes[n]['x']) for n in ruta]
+
+        # Dibujar la ruta en el mapa
+        folium.PolyLine(ruta_coords, color="blue", weight=5, opacity=0.8).add_to(mapa)
 
     # Guardar el mapa en un archivo HTML dentro de la carpeta static
     mapa.save("app/static/maps/mapa_recomendaciones.html")
