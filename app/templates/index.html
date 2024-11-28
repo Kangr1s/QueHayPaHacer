@@ -39,8 +39,7 @@
                     document.getElementById("pregunta").innerText = data.pregunta;
                     document.getElementById("opciones").innerHTML = data.opciones.map(
                         opcion => `
-                            <input type="radio" name="respuesta" value="${opcion.respuesta}" onchange="seleccionarRespuesta('${opcion.respuesta}')">
-                            <label>${opcion.respuesta}</label><br>`
+                             <button class="button" onclick="seleccionarRespuesta('${opcion.respuesta}')"><b>${opcion.respuesta}</b></button>`
                     ).join('');
                 }
             });
@@ -73,10 +72,8 @@
         respuestas = [];
         document.getElementById("pregunta").innerText = "¿Qué tipo de plan prefieres?";
         document.getElementById("opciones").innerHTML = `
-            <input type="radio" name="respuesta" value="plan extremo" onchange="seleccionarRespuesta('plan extremo')">
-            <label>Plan extremo</label><br>
-            <input type="radio" name="respuesta" value="plan fresco" onchange="seleccionarRespuesta('plan fresco')">
-            <label>Plan fresco</label><br>`;
+                <button class="button" onclick="seleccionarRespuesta('plan extremo')"><b>Plan extremo</b></button>
+                <button class="button" onclick="seleccionarRespuesta('plan fresco')"><b>Plan fresco</b></button>`;
         document.getElementById("reiniciar").innerHTML = '';
         document.getElementById("iniciar").style.display = "none"; // Ocultar el botón de inicio
         document.getElementById("map").style.display = "none"; // Asegurar que el mapa esté oculto al inicio
@@ -99,6 +96,34 @@
     </script>
 </head>
 <body>
+        <!-- Menú de navegación -->
+        <header>
+            <nav>
+                <!-- Logo -->
+                <div class="logo">
+                    <a href="/">
+                        <img src="../static/img/placeholder-19_icon-icons.com_62029.png" alt="Logo Aplicación" title="Logo de la Aplicación">
+                    </a>
+                </div>
+                <!-- Menu -->
+                <ul class="menu">
+                    <li><a href="/">Inicio</a></li>
+                    <li><a href="/about.html">About</a></li>
+                    <li><a id="donar-menu"href="/donar.html">Donar</a></li>
+                </ul>
+                <!-- Redes sociales -->
+                <div class="social-media-header">
+                        <a href="https://www.facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
+    
+                        <a href="https://youtube.com" target="_blank"><i class="fab fa-youtube"></i></a>
+    
+                        <a href="https://tiktok.com" target="_blank"><i class="fab fa-tiktok"></i></a>
+    
+                        <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+                </div>
+            </nav>
+        </header>
+
     <div class="container">
         <div class="bg-3">
             <h1 class="text-gradient">¿Qué hay pa' en Popayán?</h1>
@@ -109,5 +134,34 @@
         <div id="reiniciar"></div> <!-- Div para el botón de reiniciar -->
         <button class="shadow-effect" id="iniciar" onclick="iniciar()">Inicia la búsqueda</button> <!-- Botón para iniciar -->
     </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <!-- Informacion de contacto -->
+            <div class="contact-info">
+                <a href="/">
+                    <img src="../static/img/Diseño sin título (1).png" alt="Logo Aplicación" class="footer-logo">
+                </a>
+                <p><strong>Dirección:</strong> Cra 33X #17 - 22</p>
+                <p><strong>Teléfono:</strong> +57 31242354454</p>
+                <p><strong>Email:</strong> contacto@quehaypahacer.com</p>
+            </div>
+
+            <!-- Redes sociales -->
+            <div class="social-media-footer">
+                <a href="https://www.facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
+                <a href="https://youtube.com" target="_blank"><i class="fab fa-youtube"></i></a>
+                <a href="https://tiktok.com" target="_blank"><i class="fab fa-tiktok"></i></a>
+                <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+
+        <!-- Derechos reservados -->
+        <div class="footer-bottom">
+            <p>&copy; 2024 ConstCode. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
 </body>
 </html>

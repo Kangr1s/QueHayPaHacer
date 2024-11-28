@@ -8,9 +8,10 @@ from folium import DivIcon
 
 app = Flask(__name__)
 
-# Inicializar el grafo globalmente al inicio de la aplicación
+# Inicializar el grafo globalmente al inicio de la aplicación, 
 print("Cargando mapa de la ciudad...")
-G = ox.graph_from_place("Popayán, Colombia", network_type='drive')
+# Cargar grafos de cada municipio
+G = ox.graph_from_place("Popayán, Colombia", network_type='drive', simplify=False)
 print("Mapa cargado exitosamente.")
 
 # Función de error 404. Llama la página de error
@@ -102,8 +103,6 @@ def pregunta():
         "natural": ['plan fresco', 'Natural', 'No']
     }
 
-    # Filtrar lugares según las respuestas y los pesos de las aristas
-    # Filtrar lugares según las respuestas y los pesos de las aristas
     # Filtrar lugares según las respuestas y los pesos de las aristas
     lugares = []  # Usar una lista para mantener el orden
     for ruta, condiciones in traduccion_rutas.items():
